@@ -5,11 +5,12 @@ from ..utils.paths import get_asset_path
 from .ball import Cannonball
 
 class Cannon(pygame.sprite.Sprite):
-    def __init__(self, screen, cannonballs, cannonballs_left):
+    def __init__(self, screen, cannonballs, cannonballs_left, particles):
         super().__init__()
         self.screen = screen
         self.cannonballs = cannonballs
         self.cannonballs_left = cannonballs_left
+        self.particles = particles
         
         # Power states
         self.current_power = MIN_POWER
@@ -101,6 +102,10 @@ class Cannon(pygame.sprite.Sprite):
             # Release Space to Fire
             if self.cannon_fire_sound:
                 self.cannon_fire_sound.play()
+            
+            # Spawn muzzle smoke
+            self.particles.spawn_smoke(self.x, self.y, self.angle)
+            
             self.cannonballs.append(Cannonball(self.screen, self.x, self.y, self.angle, self.current_power))
             self.cannonballs_left -= 1
             self.is_charging = False
