@@ -13,6 +13,9 @@ from sound_manager import SoundManager
 
 class CannonFrenzy:
     def __init__(self):
+        # Pre-initialize mixer with a larger buffer; let Pygame match OS frequency
+        pygame.mixer.pre_init(buffer=4096)
+
         # Initialize pygame modules
         pygame.init()
         pygame.mixer.init()

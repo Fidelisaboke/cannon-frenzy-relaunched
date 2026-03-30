@@ -1,7 +1,7 @@
 import sys
 import pygame
 
-from constants import *
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from sound_manager import SoundManager
 
 
@@ -9,6 +9,7 @@ class Menu:
     def __init__(self, screen, sound_manager: SoundManager):
         self.screen = screen
         self.sound_manager = sound_manager
+        self.clock = pygame.time.Clock()
 
         # Fonts
         self.font = pygame.font.Font(None, 72)
@@ -24,16 +25,17 @@ class Menu:
 
     def start_menu(self):
         """Displays the game's start menu."""
-        self.sound_manager.start_menu_music.play(loops=-1)
+        self.sound_manager.play_start_menu_music()
 
         while True:
+            self.clock.tick(60)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-                    self.sound_manager.start_menu_music.stop()
+                    self.sound_manager.stop_start_menu_music()
                     self.sound_manager.game_start_sound.play()
                     return
 

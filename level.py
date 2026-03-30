@@ -2,7 +2,7 @@ import random
 
 import pygame
 
-from constants import *
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 from sprites import Target
 
 

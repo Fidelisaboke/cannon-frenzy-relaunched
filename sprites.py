@@ -2,7 +2,7 @@
 
 import pygame
 import math
-from constants import *
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Cannon(pygame.sprite.Sprite):
     def __init__(self, screen, cannonballs, cannonballs_left, power=25):
