@@ -1,10 +1,7 @@
 import random
-
 import pygame
-
-from constants import *
-from sprites import Target
-
+from ..config.constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from ..entities.target import Target
 
 class Level:
     def __init__(self, screen, level_number, num_targets, target_size, cannonballs_left):

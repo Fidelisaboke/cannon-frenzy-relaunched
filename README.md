@@ -1,8 +1,8 @@
-# Cannon Frenzy
+# Cannon Frenzy - Relaunched
 
-**Cannon Frenzy** is an engaging and fast-paced game where players control a cannon to achieve specific objectives. This repository contains the source code and all the assets necessary to run and play Cannon Frenzy.
-
----
+**Cannon Frenzy - Relaunched** is an engaging and fast-paced game where players control a cannon to achieve specific objectives. 
+This repository is an extension of the original Cannon Frenzy game, with added features and improvements.
+Original game: [Cannon-Frenzy](https://github.com/Twna-Jane/Cannon-Frenzy)
 
 ## Table of Contents
 
@@ -10,8 +10,6 @@
 2. [Setup Instructions](#setup-instructions)
 3. [How to Play](#how-to-play)
 4. [License](#license)
-
----
 
 ## Features
 
@@ -67,10 +65,6 @@ Run the `main.py` file to play the game.
 4. **Game Over**:
    The game ends when you run out of cannonballs.
 
----
-
 ## License
 
 This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software, provided that the original license is included.
-
-  
