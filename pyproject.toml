@@ -1,0 +1,19 @@
+[project]
+name = "cannon-frenzy-relaunched"
+version = "0.1.0"
+description = "A 2D artillery adventure game built using PyGame"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pygame>=2.6.1",
+]
+
+[project.scripts]
+cannon-frenzy = "cannon_frenzy.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cannon_frenzy"]

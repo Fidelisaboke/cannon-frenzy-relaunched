@@ -1,5 +1,5 @@
 import pygame
-from constants import *
+from ..config.constants import SCREEN_WIDTH
 
 class Scoreboard:
     def __init__(self, screen):

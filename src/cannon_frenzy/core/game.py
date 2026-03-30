@@ -2,20 +2,23 @@
 
 import sys
 import pygame
-import sprites
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from level import Level
-from levels_config import LEVELS_CONFIG
-from menu import Menu
-from scoreboard import Scoreboard
-from sound_manager import SoundManager
+from ..config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from ..config.levels import LEVELS_CONFIG
+from ..entities.cannon import Cannon
+from ..scenes.level import Level
+from ..scenes.menu import Menu
+from ..scenes.scoreboard import Scoreboard
+from .sound import SoundManager
+from ..utils.paths import get_asset_path
 
 
 class CannonFrenzy:
     def __init__(self):
+        # Pre-initialize mixer with a robust buffer
+        pygame.mixer.pre_init(buffer=2048)
+
         # Initialize pygame modules
         pygame.init()
-        pygame.mixer.init()
 
         # Stop the game if pygame fails to initialize
         if not pygame.get_init():
@@ -44,14 +47,23 @@ class CannonFrenzy:
         # Menu manager
         self.menu = Menu(self.screen, self.sound_manager)
 
-        # Background Image
-        self.level_bg_image = pygame.image.load("assets/images/backgrounds/grasslands.png")
+        # Pre-load and cache all background images (avoids disk I/O every frame)
+        fallback_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        try:
+            self.bg_grasslands = pygame.image.load(get_asset_path("images/backgrounds/grasslands.png")).convert()
+        except (pygame.error, FileNotFoundError):
+            self.bg_grasslands = fallback_surface
+        try:
+            self.bg_desert = pygame.image.load(get_asset_path("images/backgrounds/desert.png")).convert()
+        except (pygame.error, FileNotFoundError):
+            self.bg_desert = fallback_surface
+        self.level_bg_image = self.bg_grasslands
 
         # Initial properties -> Level 1
         self.score = 0
         self.game_over = False
         self.cannonballs = []
-        self.cannon = sprites.Cannon(
+        self.cannon = Cannon(
             self.screen,
             self.cannonballs,
             self.current_level.cannonballs_left
@@ -73,7 +85,7 @@ class CannonFrenzy:
         self.score = 0
         self.game_over = False
         self.cannonballs = []
-        self.cannon = sprites.Cannon(self.screen, self.cannonballs, self.current_level.cannonballs_left)
+        self.cannon = Cannon(self.screen, self.cannonballs, self.current_level.cannonballs_left)
         self.combo_count = 0
         self.max_combo_streak = 0
 
@@ -108,11 +120,11 @@ class CannonFrenzy:
             if self.game_over:
                 self.handle_game_over()
             else:
-                # Determine background image according to level number
+                # Select cached background image according to level number
                 if self.current_level.level_number % 2 == 0:
-                    self.level_bg_image = pygame.image.load("assets/images/backgrounds/desert.png")
+                    self.level_bg_image = self.bg_desert
                 else:
-                    self.level_bg_image = pygame.image.load("assets/images/backgrounds/grasslands.png")
+                    self.level_bg_image = self.bg_grasslands
 
                 self.screen.blit(self.level_bg_image, (0, 0))
                 self.cannon.draw()
@@ -143,7 +155,7 @@ class CannonFrenzy:
                     if self.current_level_index < len(self.levels):
                         self.current_level = self.levels[self.current_level_index]
                         cannonballs_left = self.current_level.cannonballs_left
-                        self.cannon = sprites.Cannon(self.screen, self.cannonballs, cannonballs_left)
+                        self.cannon = Cannon(self.screen, self.cannonballs, cannonballs_left)
 
                 # Display the scoreboard
                 self.scoreboard.draw(
