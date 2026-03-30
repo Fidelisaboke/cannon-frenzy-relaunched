@@ -14,12 +14,11 @@ from ..utils.paths import get_asset_path
 
 class CannonFrenzy:
     def __init__(self):
-        # Pre-initialize mixer with a larger buffer; let Pygame match OS frequency
-        pygame.mixer.pre_init(buffer=4096)
+        # Pre-initialize mixer with a robust buffer
+        pygame.mixer.pre_init(buffer=2048)
 
         # Initialize pygame modules
         pygame.init()
-        pygame.mixer.init()
 
         # Stop the game if pygame fails to initialize
         if not pygame.get_init():
@@ -48,11 +47,17 @@ class CannonFrenzy:
         # Menu manager
         self.menu = Menu(self.screen, self.sound_manager)
 
-        # Background Image
+        # Pre-load and cache all background images (avoids disk I/O every frame)
+        fallback_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         try:
-             self.level_bg_image = pygame.image.load(get_asset_path("images/backgrounds/grasslands.png"))
+            self.bg_grasslands = pygame.image.load(get_asset_path("images/backgrounds/grasslands.png")).convert()
         except (pygame.error, FileNotFoundError):
-             self.level_bg_image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+            self.bg_grasslands = fallback_surface
+        try:
+            self.bg_desert = pygame.image.load(get_asset_path("images/backgrounds/desert.png")).convert()
+        except (pygame.error, FileNotFoundError):
+            self.bg_desert = fallback_surface
+        self.level_bg_image = self.bg_grasslands
 
         # Initial properties -> Level 1
         self.score = 0
@@ -115,14 +120,11 @@ class CannonFrenzy:
             if self.game_over:
                 self.handle_game_over()
             else:
-                # Determine background image according to level number
-                try:
-                    if self.current_level.level_number % 2 == 0:
-                        self.level_bg_image = pygame.image.load(get_asset_path("images/backgrounds/desert.png"))
-                    else:
-                        self.level_bg_image = pygame.image.load(get_asset_path("images/backgrounds/grasslands.png"))
-                except (pygame.error, FileNotFoundError):
-                    pass # Keep previous or surface
+                # Select cached background image according to level number
+                if self.current_level.level_number % 2 == 0:
+                    self.level_bg_image = self.bg_desert
+                else:
+                    self.level_bg_image = self.bg_grasslands
 
                 self.screen.blit(self.level_bg_image, (0, 0))
                 self.cannon.draw()

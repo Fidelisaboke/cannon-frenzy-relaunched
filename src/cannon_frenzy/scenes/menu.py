@@ -27,6 +27,13 @@ class Menu:
             self.start_menu_bg_image = pygame.Surface((800, 600))
             self.game_over_menu_bg_image = pygame.Surface((800, 600))
 
+        # Pre-render static text surfaces (avoids allocating new surfaces every frame)
+        self.title_text = self.font.render("Cannon Frenzy", True, "Black")
+        self.title_rect = self.title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3))
+
+        self.start_text = self.small_font.render("Press S to Start", True, "Black")
+        self.start_rect = self.start_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+
     def start_menu(self):
         """Displays the game's start menu."""
         self.sound_manager.play_start_menu_music()
@@ -46,15 +53,11 @@ class Menu:
             # Draw menu background
             self.screen.blit(self.start_menu_bg_image, (0, 0))
 
-            # Display game title
-            title_text = self.font.render("Cannon Frenzy", True, "Black")
-            title_rect = title_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3))
-            self.screen.blit(title_text, title_rect)
+            # Display game title (pre-rendered)
+            self.screen.blit(self.title_text, self.title_rect)
 
-            # Display start instructions
-            start_text = self.small_font.render("Press S to Start", True, "Black")
-            start_rect = start_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-            self.screen.blit(start_text, start_rect)
+            # Display start instructions (pre-rendered)
+            self.screen.blit(self.start_text, self.start_rect)
 
             pygame.display.update()
 
