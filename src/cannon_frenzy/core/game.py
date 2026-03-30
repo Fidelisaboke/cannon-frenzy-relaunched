@@ -2,7 +2,10 @@
 
 import sys
 import pygame
-from ..config.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from ..config.constants import (
+    SCREEN_WIDTH, SCREEN_HEIGHT,
+    FONT_TITLE, SIZE_TITLE
+)
 from ..config.levels import LEVELS_CONFIG
 from ..entities.cannon import Cannon
 from ..scenes.level import Level
@@ -30,7 +33,10 @@ class CannonFrenzy:
         pygame.display.set_caption("Cannon Frenzy")
         self.clock = pygame.time.Clock()
         self.fps = 60
-        self.font = pygame.font.Font(None, 72)
+        try:
+            self.font = pygame.font.Font(get_asset_path(FONT_TITLE), SIZE_TITLE)
+        except (pygame.error, FileNotFoundError):
+            self.font = pygame.font.Font(None, SIZE_TITLE)
 
         # Level configurations
         self.levels = [Level(self.screen, **config) for config in LEVELS_CONFIG]

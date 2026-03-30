@@ -1,12 +1,16 @@
 import pygame
-from ..config.constants import SCREEN_WIDTH
+from ..config.constants import SCREEN_WIDTH, FONT_HUD, SIZE_SCOREBOARD
+from ..utils.paths import get_asset_path
 
 class Scoreboard:
     def __init__(self, screen):
         self.screen = screen
         self.x = 10
         self.y = 10
-        self.font = pygame.font.Font(None, 32)
+        try:
+            self.font = pygame.font.Font(get_asset_path(FONT_HUD), SIZE_SCOREBOARD)
+        except (pygame.error, FileNotFoundError):
+            self.font = pygame.font.Font(None, 24)
 
     def draw(self, level_number, score, combo_count, max_combo_streak, cannonballs_left):
         """Display the scoreboard."""

@@ -8,10 +8,7 @@ def get_resource_path(relative_path):
         base_path = sys._MEIPASS
     except AttributeError:
         # In development, use the project root (one level up from src/cannon_frenzy/utils)
-        # Actually, let's make it relative to the PROJECT_ROOT
         current_dir = os.path.dirname(os.path.abspath(__file__))
-        # current_dir is src/cannon_frenzy/utils
-        # project_root is three levels up
         base_path = os.path.abspath(os.path.join(current_dir, "..", "..", ".."))
 
     return os.path.join(base_path, relative_path)
