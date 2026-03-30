@@ -8,6 +8,7 @@ from ..config.constants import (
 )
 from ..config.levels import LEVELS_CONFIG
 from ..entities.cannon import Cannon
+from ..entities.particles import ParticleManager
 from ..scenes.level import Level
 from ..scenes.menu import Menu
 from ..scenes.scoreboard import Scoreboard
@@ -46,6 +47,9 @@ class CannonFrenzy:
         # Scoreboard
         self.scoreboard = Scoreboard(self.screen)
 
+        # Particle system
+        self.particles = ParticleManager()
+
         # Sound manager
         self.sound_manager = SoundManager()
         self.game_over_sound_played = False
@@ -72,7 +76,8 @@ class CannonFrenzy:
         self.cannon = Cannon(
             self.screen,
             self.cannonballs,
-            self.current_level.cannonballs_left
+            self.current_level.cannonballs_left,
+            self.particles
         )
 
         # Combo tracker
@@ -91,7 +96,8 @@ class CannonFrenzy:
         self.score = 0
         self.game_over = False
         self.cannonballs = []
-        self.cannon = Cannon(self.screen, self.cannonballs, self.current_level.cannonballs_left)
+        self.particles = ParticleManager()  # Clear particles on reset
+        self.cannon = Cannon(self.screen, self.cannonballs, self.current_level.cannonballs_left, self.particles)
         self.combo_count = 0
         self.max_combo_streak = 0
 
@@ -134,6 +140,7 @@ class CannonFrenzy:
 
                 self.screen.blit(self.level_bg_image, (0, 0))
                 self.cannon.draw()
+                self.particles.draw(self.screen)
                 self.current_level.draw()
 
                 for cannonball in self.cannonballs[:]:
@@ -147,6 +154,7 @@ class CannonFrenzy:
                     for target in self.current_level.targets[:]:
                         if target.hit(cannonball):
                             self.sound_manager.target_hit_sound.play()
+                            self.particles.spawn_explosion(target.x, target.y, target.color)
                             self.current_level.targets.remove(target)
                             self.cannonballs.remove(cannonball)
                             self.combo_count += 1
@@ -161,7 +169,7 @@ class CannonFrenzy:
                     if self.current_level_index < len(self.levels):
                         self.current_level = self.levels[self.current_level_index]
                         cannonballs_left = self.current_level.cannonballs_left
-                        self.cannon = Cannon(self.screen, self.cannonballs, cannonballs_left)
+                        self.cannon = Cannon(self.screen, self.cannonballs, cannonballs_left, self.particles)
 
                 # Display the scoreboard
                 self.scoreboard.draw(
@@ -171,6 +179,9 @@ class CannonFrenzy:
                     max_combo_streak=self.max_combo_streak,
                     cannonballs_left=self.cannon.cannonballs_left
                 )
+
+                # Update particles
+                self.particles.update()
 
                 # Update the cannon sprite
                 self.cannon.update()
