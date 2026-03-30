@@ -1,6 +1,10 @@
 import sys
 import pygame
-from ..config.constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from ..config.constants import (
+    SCREEN_HEIGHT, SCREEN_WIDTH,
+    FONT_TITLE, FONT_HUD,
+    SIZE_TITLE, SIZE_HEADER, SIZE_HUD
+)
 from ..utils.paths import get_asset_path
 
 class Menu:
@@ -10,8 +14,12 @@ class Menu:
         self.clock = pygame.time.Clock()
 
         # Fonts
-        self.font = pygame.font.Font(None, 72)
-        self.small_font = pygame.font.Font(None, 36)
+        try:
+            self.font = pygame.font.Font(get_asset_path(FONT_TITLE), SIZE_TITLE)
+            self.small_font = pygame.font.Font(get_asset_path(FONT_HUD), SIZE_HUD)
+        except (pygame.error, FileNotFoundError):
+            self.font = pygame.font.Font(None, SIZE_TITLE)
+            self.small_font = pygame.font.Font(None, SIZE_HUD)
 
         # Background images
         try:
@@ -64,20 +72,27 @@ class Menu:
     def game_over_menu(self, score):
         """Displays the Game over screen"""
         self.screen.blit(self.game_over_menu_bg_image, (0, 0))
-        font = pygame.font.Font(None, 50)
-        game_over_text = font.render("GAME OVER", True, "White")
-        game_over_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, 200))
+        
+        try:
+            title_font = pygame.font.Font(get_asset_path(FONT_TITLE), SIZE_HEADER)
+            hud_font = pygame.font.Font(get_asset_path(FONT_HUD), SIZE_HUD)
+        except (pygame.error, FileNotFoundError):
+            title_font = pygame.font.Font(None, SIZE_HEADER)
+            hud_font = pygame.font.Font(None, SIZE_HUD)
+
+        game_over_text = title_font.render("GAME OVER", True, "Red")
+        game_over_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, 180))
         self.screen.blit(game_over_text, game_over_rect)
 
-        score_text = font.render(f"Score: {score}", True, "White")
+        score_text = hud_font.render(f"Final Score: {score}", True, "White")
         score_text_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, 260))
         self.screen.blit(score_text, score_text_rect)
 
-        restart_text = font.render("R - Restart Game", True, "White")
+        restart_text = hud_font.render("Press R to Restart", True, "Yellow")
         restart_text_rect = restart_text.get_rect(center=(SCREEN_WIDTH // 2, 360))
         self.screen.blit(restart_text, restart_text_rect)
 
-        start_menu_text = font.render("M - Start Menu", True, "White")
+        start_menu_text = hud_font.render("Press M for Menu", True, "White")
         start_menu_text_rect = start_menu_text.get_rect(center=(SCREEN_WIDTH // 2, 420))
         self.screen.blit(start_menu_text, start_menu_text_rect)
 
