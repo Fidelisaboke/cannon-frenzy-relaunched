@@ -3,7 +3,7 @@
 import sys
 import pygame
 import sprites
-from constants import *
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from level import Level
 from levels_config import LEVELS_CONFIG
 from menu import Menu
@@ -15,6 +15,7 @@ class CannonFrenzy:
     def __init__(self):
         # Initialize pygame modules
         pygame.init()
+        pygame.mixer.init()
 
         # Stop the game if pygame fails to initialize
         if not pygame.get_init():
